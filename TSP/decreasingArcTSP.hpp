@@ -1,5 +1,7 @@
-#ifndef _CHAINE_HPP_
-#define _CHAINE_HPP_
+#ifndef _DECREASING_ARC_TSP_HPP_
+#define _DECREASING_ARC_TSP_HPP_
+
+using namespace std;
 
 class decreasingArc{
 
@@ -9,8 +11,9 @@ class decreasingArc{
 
 
 public:
-  ~decreasingArc();
+  
   decreasingArc();
+  ~decreasingArc();
   void path(vector <int> Sommets);
 }
 
