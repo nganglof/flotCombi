@@ -12,12 +12,10 @@ public:
   
   closestInsertion(TSPData);
   ~closestInsertion();
-  void path(vector <int> Sommets);
+
+
+
 };
-
-
-
-
 
 
 
