@@ -10,7 +10,7 @@ class ClosestInsertion{
   static const int cpt = 1; 
 public:
   
-  ClosestInsertion(TSPData);
+  ClosestInsertion(const TSPData&);
   ~ClosestInsertion();
 
 
