@@ -1,7 +1,9 @@
-#include "decreasingArcTSP.hpp"
+#include "closestInsertionTSP.hpp"
+#include <cstdio>
+#include <cstring>
 
-decreasingArc::decreasingArc(){}
+closestInsertion::closestInsertion(){}
 
-decreasingArc::decreasingArc(){}
+closestInsertion::~closestInsertion(){}
 
-void decreasingArc::path(vector <int> Sommets){}
+void closestInsertion::path(vector <int> Sommets){}
