@@ -9,13 +9,30 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <vector>
 
 #include "TSP.h"
 #include "decreasingArcTSP.hpp"
-#include "closestInsertion.hpp"
-
+#include "closestInsertionTSP.hpp"
 
 using namespace std;
+
+
+void run_decreasingArc(const TSPData &data){
+
+
+	DecreasingArc DA(data);
+	while(!DA.isEmpty()){
+
+		Arc next = DA.retrieveNext();
+		DA.addArcPath(next);
+	}
+
+	cout << DA << endl;
+
+}
+
+
 
 void usage (char* s){
   cout << "Usage: " << s << " <int> <data.tsp>" << endl;
@@ -41,7 +58,8 @@ int main(int argc, char * argv[]) {
 			break;
 
 		case 2 :
-			//algo 2 : decreasingArc
+			run_decreasingArc(data);
+			//DecreasingArc DA(data);
 			break;
 
 		case 3 :
