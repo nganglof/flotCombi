@@ -13,7 +13,7 @@
 
 #include "TSP.h"
 #include "decreasingArcTSP.hpp"
-#include "closestInsertionTSP.hpp"
+#include "ClosestInsertionTSP.hpp"
 
 using namespace std;
 
@@ -32,7 +32,10 @@ void run_decreasingArc(const TSPData &data){
 
 }
 
-
+void run_closestInsertion(const TSPData &data){
+  ClosestInsertion CI(data);
+  
+}
 
 void usage (char* s){
   cout << "Usage: " << s << " <int> <data.tsp>" << endl;
