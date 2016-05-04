@@ -5,14 +5,14 @@ LDFLAGS =
 
 default: main
 
-main: main.cpp arc.o decreasingArcTSP.o
+main: main.cpp arc.o decreasingArcTSP.o ClosestInsertionTSP.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 decreasingArcTSP.o: decreasingArcTSP.cpp
 	$(CC) $(CFLAGS) -o decreasingArcTSP.o -c decreasingArcTSP.cpp
 
-closestInsertionTSP.o: closestInsertionTSP.cpp
-	$(CC) $(CFLAGS) -o closestInsertionTSP.o -c closestInsertionTSP.cpp
+ClosestInsertionTSP.o: ClosestInsertionTSP.cpp
+	$(CC) $(CFLAGS) -o ClosestInsertionTSP.o -c ClosestInsertionTSP.cpp
 
 furthestInsertionTSP.o: furthestInsertionTSP.cpp
 	$(CC) $(CFLAGS) -o furthestInsertionTSP.o -c furthestInsertionTSP.cpp
