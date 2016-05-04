@@ -13,8 +13,7 @@ ClosestInsertion::ClosestInsertion(TSPData data){
   town.push_back(i0);
   
   
-
-
 }
+ClosestInsertion::~ClosestInsertion(){}
 
 
