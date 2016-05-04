@@ -6,4 +6,7 @@ closestInsertion::closestInsertion(){}
 
 closestInsertion::~closestInsertion(){}
 
-void closestInsertion::path(vector <int> Sommets){}
+void closestInsertion::path(vector <int> Sommets){
+  
+  
+}
