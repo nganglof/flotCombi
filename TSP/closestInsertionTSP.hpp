@@ -1,7 +1,7 @@
 #ifndef _DECREASING_ARC_TSP_HPP_
 #define _DECREASING_ARC_TSP_HPP_
 #include <vector>
-
+#include "TSP.h"
 
 using namespace std;
 
@@ -10,7 +10,7 @@ class closestInsertion{
   static const int cpt = 1; 
 public:
   
-  closestInsertion();
+  closestInsertion(TSPData);
   ~closestInsertion();
   void path(vector <int> Sommets);
 };
