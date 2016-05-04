@@ -19,30 +19,23 @@ DecreasingArc::DecreasingArc(const TSPData &data){
 
 	for (int i = 0; i < size; ++i) {
 		for (int j = 0; j < size; ++j) {
-			//Arc* a = new Arc(i,j,matrix[i][j]);
-			//cout << "arc : " << a->getSource() << "," << a->getTarget() << " dist : " << a->getDistance() << endl;
 			if(i!=j) {
 				Arc a(i,j,matrix[i][j]);
-				arcs.push_back(a);
+				remainingArcs.push_back(a);
 			}
 		}
 	}
 
+	std::sort(remainingArcs.begin(), remainingArcs.end());
 
-	std::sort(arcs.begin(), arcs.end());
-
-
-	for (unsigned i=0; i < arcs.size(); i++) {
-    	cout << "arc : " << arcs[i].getSource() << "," << arcs[i].getTarget() << " dist : " << arcs[i].getDistance() << endl;
+	for (unsigned i=0; i < remainingArcs.size(); i++) {
+    	cout << "arc : " << remainingArcs[i].getSource() << "," << remainingArcs[i].getTarget() << " dist : " << remainingArcs[i].getDistance() << endl;
 	}
 }
 
 DecreasingArc::~DecreasingArc(){
-	vector<Arc >::iterator it;
-	for(it=arcs.begin() ; it < arcs.end(); it++ ) {
-	    //delete *it;
-	}
-	arcs.clear();
+	remainingArcs.clear();
+	selectedArcs.clear();
 }
 
 
@@ -59,41 +52,72 @@ Arc DecreasingArc::retrieveNext(){
 	int i =0;
 
 	while(!found){
-		if(isSuitable(arcs[i])){
+		if(isSuitable(remainingArcs[i])){
 			found = 1;
 		}
 		else 
 			i++;
 	}
-	Arc a = arcs[i];
-	arcs.erase(arcs.begin()+i);
+	Arc a = remainingArcs[i];
+	remainingArcs.erase(remainingArcs.begin()+i);
 	return a;
 }
 
 
-void DecreasingArc::addArcPath(const Arc& a){
-	path.push_back(a);
+void DecreasingArc::addSelectedArc(const Arc& a){
+	selectedArcs.push_back(a);
 }
 
 int DecreasingArc::isEmpty() const{
-	return !arcs.size();
+	return !remainingArcs.size();
 }
 
 int DecreasingArc::getPathSize() const{
 	return path.size();
 }
 
-Arc DecreasingArc::getArcFromArcs(int i) const{
+Arc DecreasingArc::getArcFromPath(int i) const{
 	return path[i];
+}
+
+void DecreasingArc::constructPath(){
+
+	//remettre les arcs choisis dans l'ordre
+	path.push_back(selectedArcs.front());
+	selectedArcs.erase(selectedArcs.begin());
+	int current = path.front().getTarget();
+	int i=0;
+	int sizeSelected = selectedArcs.size();
+	int found = 0;
+
+	//tant qu'il reste des arcs
+	while(sizeSelected){
+
+		//on cherche l'arc consécutif
+		while(!found) {
+
+			if(selectedArcs[i].getSource() == current){
+
+				path.push_back(selectedArcs[i]);
+				current=selectedArcs[i].getTarget();
+				selectedArcs.erase(selectedArcs.begin()+i);
+				sizeSelected--;
+				i=0;
+				found = 1;
+			}
+			else
+				i++;
+		}
+		found = 0;
+	}
 }
 
 ostream& operator<<(ostream& os,const DecreasingArc& da )
 {
 	int i;
 	for(i=0; i < da.getPathSize(); i++) {
-		os << da.getArcFromArcs(i).getSource() << " , ";
+		os << da.getArcFromPath(i).getSource() << "," << da.getArcFromPath(i).getTarget() << " ; ";
 	}
-	os << da.getArcFromArcs(i).getTarget();
 
     return os;
 }

@@ -10,8 +10,8 @@ using namespace std;
 class DecreasingArc{
 
 	private :
-		//std::vector<Arc*> arcs;
-		std::vector<Arc> arcs;
+		std::vector<Arc> remainingArcs;
+		std::vector<Arc> selectedArcs;
 		std::vector<Arc> path;
 
 	public :
@@ -21,10 +21,12 @@ class DecreasingArc{
 		Arc retrieveNext();
 		int isSuitable(const Arc& a);
 		int isEmpty()const;
-		void addArcPath(const Arc& a);
+		void addSelectedArc(const Arc& a);
+
 		int getPathSize()const;
-		
-		Arc getArcFromArcs(int i) const;
+		void constructPath();
+
+		Arc getArcFromPath(int i) const;
 
 		friend ostream& operator<<(ostream& os ,const DecreasingArc& da );
 };
