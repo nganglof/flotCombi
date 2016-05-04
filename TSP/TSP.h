@@ -83,7 +83,7 @@ public :
 
 
 	/* retourne la matrice de doubles */
-	long ** getMatrix(){
+	long ** getMatrix()const{
 		return matrix;
 	}
 
