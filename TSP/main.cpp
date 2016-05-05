@@ -35,14 +35,11 @@ void run_decreasingArc(const TSPData &data){
 }
 
 void run_closestInsertion(const TSPData &data){
-	ClosestInsertion CI(data);
-	vector<int> v;
-	v = CI.path();
-	for(int i = 0; i < data.getSize(); i++){
-		cout << "Town path" << endl;
-		cout << "\n" << v[i];
-	}
+  ClosestInsertion CI(data);
+  CI.path();
+  cout << CI << endl;
 }
+
 
 
 void run_furthestInsertion(const TSPData &data){

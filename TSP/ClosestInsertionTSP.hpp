@@ -15,10 +15,14 @@ public:
   int next_town;
   set<int> *visited;
   set<int>::iterator it;
+  vector<int> nodesPath;
+  float length;
 public:
   
   ClosestInsertion(const TSPData&);
   ~ClosestInsertion();
+
+  friend ostream& operator<<(ostream& os ,const ClosestInsertion& ci );
 
   void path();
 
