@@ -82,6 +82,7 @@ int main(int argc, char * argv[]) {
 
 		case 4 :
 			//comparaison des trois algo
+		break;
 	}
 
 	toto.close();
