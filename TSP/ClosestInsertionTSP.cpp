@@ -6,27 +6,32 @@
 
 
 ClosestInsertion::ClosestInsertion(const TSPData &data){
+  visited = new set<int>();
+  it = visited->begin(); 
   matrix = data.getMatrix();
   size = data.getSize();
-  next_town = rand()%(size); 
-  town.push_back(next_town);
-  visited.insert(it,next_town);
-  closest = size + 1; //initialization
+  srand(time(NULL));
+  next_town = rand()%(size - 1); 
+  cout << "Departure :\n" << next_town; //initialization
+  
+  //visited.insert(it,next_town);
+  cout << "end of initialization" << endl;
+  closest = size + 1; 
+  
   
 }
 
-ClosestInsertion::~ClosestInsertion(){}
+ClosestInsertion::~ClosestInsertion(){
+  delete(visited);
+}
 
-vector<int> ClosestInsertion::path(){
-  set<int> visited;
+void ClosestInsertion::path(){
     for(int j = 0; j < size; j++){
-      if ((matrix[next_town][j] < closest) && ( next_town != j) && (visited.find(j) != visited.end())){
+      //cout << "Je suis ici" << j ;
+      if ((matrix[next_town][j] < closest) && ( next_town != j) && (visited->find(j) == visited->end())){
 	closest = matrix[next_town][j];	
       }
       next_town = j;
-      visited.insert(it,next_town);
-    town.push_back(next_town);
-    
+      visited->insert(it,next_town);    
   }
-  return town;
 }

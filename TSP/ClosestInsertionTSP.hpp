@@ -7,20 +7,20 @@
 using namespace std;
 
 class ClosestInsertion{
-  vector<int> town;
+public: 
   long ** matrix; 
   int current;
   int size;
   int closest;
   int next_town;
-  set<int> visited;
+  set<int> *visited;
   set<int>::iterator it;
 public:
   
   ClosestInsertion(const TSPData&);
   ~ClosestInsertion();
 
-  vector<int> path();
+  void path();
 
   
 
