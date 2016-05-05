@@ -39,6 +39,7 @@ DecreasingArc::DecreasingArc(const TSPData &data){
 DecreasingArc::~DecreasingArc(){
 	remainingArcs.clear();
 	selectedArcs.clear();
+	delete []nextNode;
 }
 
 int DecreasingArc::isSuitable(const Arc& a){
@@ -129,14 +130,12 @@ int DecreasingArc::isEmpty() const{
 	return !remainingArcs.size();
 }
 
-
 int DecreasingArc::getPathSize() const{
-	return path.size();
+	return selectedArcs.size();
 }
 
-
 Arc DecreasingArc::getArcFromPath(int i) const{
-	return path[i];
+	return selectedArcs[i];
 }
 
 int DecreasingArc::getNodesNumber() const{
@@ -152,12 +151,13 @@ void DecreasingArc::constructPath(const TSPData &data){
 	int i =0;
 	int next = start;
 
+	selectedArcs.clear();
 
 	while(i<nodesNumber){
 		int val = data.getVal(next,nextNode[next]);
 		Arc a(next,nextNode[next],val);
 		totalLength+=val;
-		path.push_back(a);
+		selectedArcs.push_back(a);
 		next = nextNode[next];
 		i++;
 	}

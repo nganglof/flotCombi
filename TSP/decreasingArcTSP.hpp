@@ -12,7 +12,6 @@ class DecreasingArc{
 	private :
 		std::vector<Arc> remainingArcs;
 		std::vector<Arc> selectedArcs;
-		std::vector<Arc> path;
 			
 		int nodesNumber;
 		int totalLength;
