@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
+#include <unistd.h>
 
 #include "decreasingArcTSP.hpp"
 
@@ -15,10 +15,16 @@ DecreasingArc::DecreasingArc(){
 DecreasingArc::DecreasingArc(const TSPData &data){
 
 	long ** matrix = data.getMatrix();
-	int size = data.getSize();
+	nodesNumber = data.getSize();
 
-	for (int i = 0; i < size; ++i) {
-		for (int j = 0; j < size; ++j) {
+	start = -1;
+	totalLength = 0;
+	nextNode = new int[nodesNumber];
+
+	for (int i = 0; i < nodesNumber; ++i) {
+
+		nextNode[i]=-1;
+		for (int j = 0; j < nodesNumber; ++j) {
 			if(i!=j) {
 				Arc a(i,j,matrix[i][j]);
 				remainingArcs.push_back(a);
@@ -28,96 +34,144 @@ DecreasingArc::DecreasingArc(const TSPData &data){
 
 	std::sort(remainingArcs.begin(), remainingArcs.end());
 
-	for (unsigned i=0; i < remainingArcs.size(); i++) {
-    	cout << "arc : " << remainingArcs[i].getSource() << "," << remainingArcs[i].getTarget() << " dist : " << remainingArcs[i].getDistance() << endl;
-	}
 }
 
 DecreasingArc::~DecreasingArc(){
 	remainingArcs.clear();
 	selectedArcs.clear();
+	delete []nextNode;
 }
-
-
 
 int DecreasingArc::isSuitable(const Arc& a){
 
-	return 1;
+	int i=0;
+	int isPossible = 1;
+
+	int currentPathSize = 0;
+
+	if(nextNode[a.getSource()]!=-1)
+		isPossible=0;
+
+	if(isPossible){
+		for(i=0;i<nodesNumber;i++){
+
+			if(nextNode[i]==a.getTarget()){
+				isPossible=0;
+			}
+			if(nextNode[i]!=-1){
+				currentPathSize++;
+			}
+		}
+	}
+
+	//lorsque taille path < nodesNumber, verifier les sous-circuits
+	if(currentPathSize<(nodesNumber-1) && isPossible){
+
+		int start = a.getSource();
+		int next = a.getTarget();
+
+		while(nextNode[next]!=-1 && isPossible){
+			if(nextNode[next]==start)
+				isPossible=0;
+			else
+				next = nextNode[next];
+		}
+	}
+
+
+
+	if(isPossible){
+		return 1;
+	}
+	else{
+		return 0;
+	}
 }
 
 
-Arc DecreasingArc::retrieveNext(){
+Arc* DecreasingArc::retrieveNext(){
 
 	int found = 0;
 	int i =0;
+	Arc* a;
 
 	while(!found){
+		usleep(10000);
+
 		if(isSuitable(remainingArcs[i])){
+			a = new Arc(remainingArcs[i]);
+			remainingArcs.erase(remainingArcs.begin()+i);
 			found = 1;
 		}
-		else 
-			i++;
+		else{
+			a = NULL;
+			remainingArcs.erase(remainingArcs.begin()+i);
+			if(!remainingArcs.size())
+				found=1;
+		}
 	}
-	Arc a = remainingArcs[i];
-	remainingArcs.erase(remainingArcs.begin()+i);
+	
+
 	return a;
 }
 
 
 void DecreasingArc::addSelectedArc(const Arc& a){
+
+	if(start==-1){
+		start = a.getSource();
+	}
 	selectedArcs.push_back(a);
+	nextNode[a.getSource()]=a.getTarget();
 }
+
 
 int DecreasingArc::isEmpty() const{
 	return !remainingArcs.size();
 }
 
 int DecreasingArc::getPathSize() const{
-	return path.size();
+	return selectedArcs.size();
 }
 
 Arc DecreasingArc::getArcFromPath(int i) const{
-	return path[i];
+	return selectedArcs[i];
 }
 
-void DecreasingArc::constructPath(){
+int DecreasingArc::getNodesNumber() const{
+	return nodesNumber;
+}
 
-	//remettre les arcs choisis dans l'ordre
-	path.push_back(selectedArcs.front());
-	selectedArcs.erase(selectedArcs.begin());
-	int current = path.front().getTarget();
-	int i=0;
-	int sizeSelected = selectedArcs.size();
-	int found = 0;
+int DecreasingArc::getTotalLength() const{
+	return totalLength;
+}
 
-	//tant qu'il reste des arcs
-	while(sizeSelected){
+void DecreasingArc::constructPath(const TSPData &data){
 
-		//on cherche l'arc consécutif
-		while(!found) {
+	int i =0;
+	int next = start;
 
-			if(selectedArcs[i].getSource() == current){
+	selectedArcs.clear();
 
-				path.push_back(selectedArcs[i]);
-				current=selectedArcs[i].getTarget();
-				selectedArcs.erase(selectedArcs.begin()+i);
-				sizeSelected--;
-				i=0;
-				found = 1;
-			}
-			else
-				i++;
-		}
-		found = 0;
+	while(i<nodesNumber){
+		int val = data.getVal(next,nextNode[next]);
+		Arc a(next,nextNode[next],val);
+		totalLength+=val;
+		selectedArcs.push_back(a);
+		next = nextNode[next];
+		i++;
 	}
 }
 
 ostream& operator<<(ostream& os,const DecreasingArc& da )
 {
 	int i;
-	for(i=0; i < da.getPathSize(); i++) {
+	int nodes = da.getNodesNumber();
+
+	for(i=0; i < nodes; i++) {
 		os << da.getArcFromPath(i).getSource() << "," << da.getArcFromPath(i).getTarget() << " ; ";
 	}
+	os << " taille total : "<< da.getTotalLength() << endl;
 
     return os;
 }

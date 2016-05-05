@@ -3,7 +3,7 @@ CC = g++
 CFLAGS  = -Wall -g
 LDFLAGS = 
 
-default: main
+default: clean main
 
 main: main.cpp arc.o decreasingArcTSP.o ClosestInsertionTSP.o furthestInsertionTSP.o
 	$(CC) $(CFLAGS) -o $@ $^
