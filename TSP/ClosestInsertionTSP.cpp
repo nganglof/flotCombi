@@ -7,24 +7,25 @@
 
 ClosestInsertion::ClosestInsertion(const TSPData &data){
   matrix = data.getMatrix();
-  int size = data.getSize();
-  int i0 = rand()%(size);
-  town.push_back(i0);
-  int current = i0; // departure point
-  int closest = size + 1; //initialization
+  size = data.getSize();
+  next_town = rand()%(size); 
+  town.push_back(next_town);
+  visited.insert(it,next_town);
+  closest = size + 1; //initialization
   
 }
 
 ClosestInsertion::~ClosestInsertion(){}
 
 vector<int> ClosestInsertion::path(){
-  for(int i = 0; i < size; i++){
+  set<int> visited;
     for(int j = 0; j < size; j++){
-      if (matrix[i][j] < closest)
-	closest = matrix[i][j];
-      town.push_back(closest);
-      current = closest;
-    } 
+      if ((matrix[next_town][j] < closest) && ( next_town != j) && (visited.find(j) != visited.end())){
+	closest = matrix[next_town][j];	
+      }
+      next_town = j;
+      visited.insert(it,next_town);
+    town.push_back(next_town);
     
   }
   return town;
