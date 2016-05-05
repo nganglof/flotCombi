@@ -18,49 +18,47 @@
 
 using namespace std;
 
-/*
 void run_decreasingArc(const TSPData &data){
-
 
 	DecreasingArc DA(data);
 	while(!DA.isEmpty()){
 
-		Arc next = DA.retrieveNext();
-		DA.addArcPath(next);
+		Arc* next = DA.retrieveNext();
+		if(next!= NULL){
+			DA.addSelectedArc(*next);
+		}
 	}
 
+	DA.constructPath(data);
 	cout << DA << endl;
 
 }
-*/
+
 void run_closestInsertion(const TSPData &data){
-  ClosestInsertion CI(data);
-  vector<int> v;
-  v = CI.path();
-  for(int i = 0; i < data.getSize(); i++){
-    cout << "Town path" << endl;
-    cout << "\n" << v[i];
-  }
+	ClosestInsertion CI(data);
+	vector<int> v;
+	v = CI.path();
+	for(int i = 0; i < data.getSize(); i++){
+		cout << "Town path" << endl;
+		cout << "\n" << v[i];
+	}
 }
 
 
 void run_furthestInsertion(const TSPData &data){
-  FurthestInsertion FI(data);
+	FurthestInsertion FI(data);
 }
 
 void usage (char* s){
-  cout << "Usage: " << s << " <int> <data.tsp>" << endl;
-  exit(EXIT_FAILURE);
+	cout << "Usage: " << s << " <int> <data.tsp>" << endl;
+	exit(EXIT_FAILURE);
 }
 
 #define PARAM 2
 int main(int argc, char * argv[]) {
 
 
-	// argv[1] methode
-	// closest decreasing furthest
-	//selon methode
-    if (argc != PARAM+1) usage(argv[0]);
+	if (argc != PARAM+1) usage(argv[0]);
 
 	fstream toto(argv[2], fstream::in);
 	TSPData data(toto);
@@ -69,18 +67,21 @@ int main(int argc, char * argv[]) {
 
 		case 1 :
 			//algo 1 : closestInsertion
-		  run_closestInsertion(data);
-			break;
+		run_closestInsertion(data);
+		break;
 
 		case 2 :
-		  //run_decreasingArc(data);
-			//DecreasingArc DA(data);
-			break;
+			//algo 2 : decreasingArc
+		run_decreasingArc(data);
+		break;
 
 		case 3 :
 			//algo 3 : furthestInsertion
-		  run_furthestInsertion(data);
-			break;
+		run_furthestInsertion(data);
+		break;
+
+		case 4 :
+			//comparaison des trois algo
 	}
 
 	toto.close();

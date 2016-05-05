@@ -7,21 +7,38 @@ Arc::Arc():source(-1), target(-1), distance(-1){}
 
 Arc::Arc(int s, int t, float d):source(s), target(t), distance(d){}
 
+Arc::Arc(const Arc &a){
+
+	source = a.getSource();
+	target = a.getTarget();
+	distance = a.getDistance();
+}
+
+
 Arc::~Arc(){}
 
-int Arc::getSource(){
+int Arc::getSource() const {
 	return source;
 }
 
-int Arc::getTarget(){
+int Arc::getTarget() const {
 	return target;
 }
 
-float Arc::getDistance(){
+float Arc::getDistance() const{
 	return distance;
 }
 
 bool Arc::operator<(const Arc& a) const
 {
-    return (distance < a.distance);
+	if(distance == a.distance){
+		if(source == a.source){
+			return target<a.getTarget();
+
+		}
+		else
+			return source<a.getSource();
+	}
+	else
+    	return (distance < a.distance);
 }

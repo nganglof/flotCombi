@@ -13,11 +13,12 @@ class Arc{
 	public :
 		Arc();
 		Arc(int s, int t, float d);
+		Arc(const Arc&);
 		~Arc();
 
-		int getSource();
-		int getTarget();
-		float getDistance();
+		int getSource() const;
+		int getTarget() const;
+		float getDistance() const;
 
 		bool operator<(const Arc& a) const;
 };
