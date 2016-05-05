@@ -14,10 +14,11 @@
 #include "TSP.h"
 #include "decreasingArcTSP.hpp"
 #include "ClosestInsertionTSP.hpp"
+#include "furthestInsertionTSP.hpp"
 
 using namespace std;
 
-
+/*
 void run_decreasingArc(const TSPData &data){
 
 
@@ -31,10 +32,15 @@ void run_decreasingArc(const TSPData &data){
 	cout << DA << endl;
 
 }
-
+*/
 void run_closestInsertion(const TSPData &data){
   ClosestInsertion CI(data);
   
+}
+
+
+void run_furthestInsertion(const TSPData &data){
+  FurthestInsertion FI(data);
 }
 
 void usage (char* s){
@@ -61,12 +67,13 @@ int main(int argc, char * argv[]) {
 			break;
 
 		case 2 :
-			run_decreasingArc(data);
+		  //run_decreasingArc(data);
 			//DecreasingArc DA(data);
 			break;
 
 		case 3 :
 			//algo 3 : furthestInsertion
+		  run_furthestInsertion(data);
 			break;
 	}
 

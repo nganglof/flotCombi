@@ -1,11 +1,11 @@
 
 CC = g++
-CFLAGS  = -Wall
+CFLAGS  = -Wall -g
 LDFLAGS = 
 
 default: main
 
-main: main.cpp arc.o decreasingArcTSP.o ClosestInsertionTSP.o
+main: main.cpp arc.o decreasingArcTSP.o ClosestInsertionTSP.o furthestInsertionTSP.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 decreasingArcTSP.o: decreasingArcTSP.cpp
