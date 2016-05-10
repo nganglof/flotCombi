@@ -1,3 +1,6 @@
+#ifndef _CVRP_HPP_
+#define _CVRP_HPP_
+
 #include <iostream>
 
 class CVRPData {
@@ -19,3 +22,5 @@ public :
 };
 
 std::ostream & operator<<(std::ostream & os, const CVRPData & cvrp);
+
+#endif

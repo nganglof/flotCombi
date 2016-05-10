@@ -3,19 +3,30 @@ CC = g++
 CFLAGS  = -Wall -g
 LDFLAGS = 
 
+TSP = ../TSP/interfaceTSP.o	../TSP/decreasingArcTSP.o ../TSP/arc.o ../TSP/closestInsertionTSP.o ../TSP/furthestInsertionTSP.o
+
 default: clean main
 
-main: main.cpp CVRP.o giantTourCVRP.o clarkeWrightCVRP.o
-	$(CC) $(CFLAGS) -o $@ $^
+main: main.cpp CVRP.o giantTourCVRP.o arcCVRP.o
+	$(CC) $(CFLAGS) -o $@  $^ $(TSP)
 
-giantTourCVRP.o: giantTourCVRP.cpp
-	$(CC) $(CFLAGS) -o giantTourCVRP.o -c giantTourCVRP.cpp
+CVRP.o: CVRP.cpp
+	$(CC) $(CFLAGS) -o CVRP.o -c CVRP.cpp
 
 clarkeWrightCVRP.o: clarkeWrightCVRP.cpp
 	$(CC) $(CFLAGS) -o clarkeWrightCVRP.o -c clarkeWrightCVRP.cpp
 
-CVRP.o: CVRP.cpp
-	$(CC) $(CFLAGS) -o CVRP.o -c CVRP.cpp
+
+#____________________________________________________GIANTTOUR
+
+
+giantTourCVRP.o: giantTourCVRP.cpp
+	$(CC) $(CFLAGS) -o giantTourCVRP.o -c giantTourCVRP.cpp
+
+arcCVRP.o: arcCVRP.cpp
+	$(CC) $(CFLAGS) -o arcCVRP.o -c arcCVRP.cpp
+
+#____________________________________________________
 
 
 clean:

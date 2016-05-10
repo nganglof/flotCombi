@@ -96,7 +96,6 @@ Arc* DecreasingArc::retrieveNext(){
 	Arc* a;
 
 	while(!found){
-		usleep(10000);
 
 		if(isSuitable(remainingArcs[i])){
 			a = new Arc(remainingArcs[i]);
@@ -161,6 +160,19 @@ void DecreasingArc::constructPath(const TSPData &data){
 		next = nextNode[next];
 		i++;
 	}
+}
+
+char* DecreasingArc::getPathString() const{
+
+	char* path;
+
+	int i;
+	int nodes = getNodesNumber();
+	asprintf(&path,"%d",start);
+	for(i=0; i < nodes; i++) {
+		asprintf(&path,"%s,%d",path,getArcFromPath(i).getTarget());
+	}
+	return path;
 }
 
 ostream& operator<<(ostream& os,const DecreasingArc& da )
