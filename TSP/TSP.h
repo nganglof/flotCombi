@@ -28,6 +28,24 @@ private :
 public :
 
 	/* initialise la donnée TSP avec un fichier d'entrée */
+
+
+	TSPData(int s,int **dist){
+		size = s;
+
+		matrix = new long* [size];
+		for (int i = 0; i < size; i++) {
+			matrix[i] = new long[size];
+		}
+
+		for (int i = 0; i < size; ++i) { // calcul des distances
+			for (int j = 0; j < size; ++j) {
+				matrix[i][j] = dist[i][j];
+			}
+		}		
+	}
+
+
 	TSPData(fstream & in){
 
 		string s;

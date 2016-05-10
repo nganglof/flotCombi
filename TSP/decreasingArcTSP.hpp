@@ -35,7 +35,8 @@ class DecreasingArc{
 		int getTotalLength() const;
 		Arc getArcFromPath(int i) const;
 		void constructPath(const TSPData& data);
-
+		char* getPathString() const;
+		
 		friend ostream& operator<<(ostream& os ,const DecreasingArc& da );
 };
 

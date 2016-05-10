@@ -1,4 +1,4 @@
-#include "ClosestInsertionTSP.hpp"
+#include "closestInsertionTSP.hpp"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>

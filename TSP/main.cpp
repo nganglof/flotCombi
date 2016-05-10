@@ -13,38 +13,12 @@
 
 #include "TSP.h"
 #include "decreasingArcTSP.hpp"
-#include "ClosestInsertionTSP.hpp"
+#include "closestInsertionTSP.hpp"
 #include "furthestInsertionTSP.hpp"
+#include "interfaceTSP.hpp"
 
 using namespace std;
 
-void run_decreasingArc(const TSPData &data){
-
-	DecreasingArc DA(data);
-	while(!DA.isEmpty()){
-
-		Arc* next = DA.retrieveNext();
-		if(next!= NULL){
-			DA.addSelectedArc(*next);
-		}
-	}
-
-	DA.constructPath(data);
-	cout << DA << endl;
-
-}
-
-void run_closestInsertion(const TSPData &data){
-  ClosestInsertion CI(data);
-  CI.path();
-  cout << CI << endl;
-}
-
-
-
-void run_furthestInsertion(const TSPData &data){
-	FurthestInsertion FI(data);
-}
 
 void usage (char* s){
 	cout << "Usage: " << s << " <int> <data.tsp>" << endl;
@@ -64,17 +38,17 @@ int main(int argc, char * argv[]) {
 
 		case 1 :
 			//algo 1 : closestInsertion
-		run_closestInsertion(data);
+			InterfaceTSP::run_closestInsertion(data);
 		break;
 
 		case 2 :
 			//algo 2 : decreasingArc
-		run_decreasingArc(data);
+			InterfaceTSP::run_decreasingArc(data);
 		break;
 
 		case 3 :
 			//algo 3 : furthestInsertion
-		run_furthestInsertion(data);
+			InterfaceTSP::run_furthestInsertion(data);
 		break;
 
 		case 4 :
