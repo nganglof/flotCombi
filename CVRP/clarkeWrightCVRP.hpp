@@ -16,10 +16,11 @@ class clarkeWrightCVRP{
 
 
 public:
-  clarkeWrightCVRP(const TSPData&);
+  clarkeWrightCVRP(const CVRPData&);
   ~clarkeWrightCVRP();
-  void clarkeWrightProcedure(CVRPData);
-  int savingPerConcatenation();
+  void clarkeWrightProcedure(const CVRPData&);
+  int savingPerConcatetion();
+  int areConcatable(struct tour, struct tour);
 
 
 };
