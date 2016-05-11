@@ -19,6 +19,9 @@ TSPData convertCVRPtoTSP(const CVRPData &data){
 }
 
 void run_clarkeWright(const CVRPData &data){
+  clarkeWrightCVRP CWCVRP(data);
+  clarkeWrightProcedure(data);
+  cout << CWCVRP << endl;
 
 }
 
