@@ -3,7 +3,8 @@
 
 
 #include "CVRP.hpp"
-
+#include "tour.hpp"
+#include "list_tour.hpp"
 
 /*This class implements Clarke & Wright algorithm */ 
 
@@ -32,7 +33,7 @@ public:
   void clarkeWrightProcedure(const CVRPData&);
 
   bool thereAreConcatableLists(const CVRPData&,struct list_tour);
-
+  bool areConcatable(const CVRPData&,struct list_tour L, struct tour, struct tour);
 };
 
 #endif
