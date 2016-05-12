@@ -68,29 +68,34 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
     
       struct tour tour_i;
       struct tour tour_j;
+      struct tour tmp_i;
+      struct tour tmp_j;
       list<char>::iterator it_i = tour_i.clients_order.begin();
       list<char>::iterator it_j = tour_j.clients_order.begin();
       list<struct tour>::iterator it_L = L.tour_list.begin();
+
       for(int i = 0 ; i < L.size ; i++){
-	for(int j = 0; j < L.size; j++){
+	for(int j = 1; j < L.size - 1; j++){
 	  advance(it_i,i);
 	  advance(it_j,j);
 	  if ( (i != j) && (savingPerConcatetion(data,tour_i,tour_j) > gain ))  {
-	    tour_j.id = j; //stock good candidates
-	    tour_i.id = i;
-	    gain = savingPerConcatetion(data,tour_i,tour_j);     
+	    gain = savingPerConcatetion(data,tour_i,tour_j); 
+	    tmp_i = tour_i; //stock good candidates
+	    tmp_j = tour_j;
+	    
 	    printf("gain trouve a : %d\n",gain);
 	}
       }
     }
     // concate the two best tours
     //advance(it_i,tour_i.clients_order.end());
-      //if(gain != 0){
-	tour_i.clients_order.splice(tour_i.clients_order.end(),tour_j.clients_order); 
-	tour_i.length++;//updating size of first list
+      if(gain != 0){
+	tmp_i.clients_order.splice(tmp_i.clients_order.end(),tmp_j.clients_order); 
+	tmp_i.length++;//updating size of first list
+	tour_i.length ++;
 	L.size--; //updating size of the set 
 	printf("fusion de 2:%d\n", L.size);
-	//}
+      }
     }
     printf("Le nb final de tournees vaut: %d\n", L.size);
   //cout << res << endl;
@@ -101,7 +106,7 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
 /* This method return if there are at least two tours which can be concated */ 
 
 bool clarkeWrightCVRP::thereAreConcatableLists(const CVRPData& data,struct list_tour L){  
-  if ( (L.size != 0) ){
+  if ( (L.size != 0) && (L.size != 1)){
     list<struct tour>::iterator it_i = L.tour_list.begin();
     list<struct tour>::iterator it_j = L.tour_list.begin();
     for(int i = 0 ; i < L.size; i++){
@@ -116,4 +121,13 @@ bool clarkeWrightCVRP::thereAreConcatableLists(const CVRPData& data,struct list_
   }
   else
     return false;
+}
+
+
+bool clarkeWrightCVRP::areConcatable(CVRPData& data,struct list_tour L ,struct tour tour_i, struct tour tour_j){
+  list<struct tour>::iterator it_i = L.tour_list.begin();
+  list<struct tour>::iterator it_j = L.tour_list.begin();
+  if ( (*it_j).used_capacity + (*it_j).used_capacity < data.getCapacity())
+    return true;
+  return false;
 }

@@ -1,6 +1,7 @@
 #ifndef _TOUR_HPP_
 #define _TOUR_HPP_
 
+#include <list>
 using namespace std;
 
 
