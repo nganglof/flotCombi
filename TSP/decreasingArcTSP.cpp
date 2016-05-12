@@ -49,15 +49,18 @@ int DecreasingArc::isSuitable(const Arc& a){
 
 	int currentPathSize = 0;
 
+	//si il y a deja un arc qui part de ce sommet
 	if(nextNode[a.getSource()]!=-1)
 		isPossible=0;
 
 	if(isPossible){
 		for(i=0;i<nodesNumber;i++){
 
+			//si il y a deja un arc qui arrive dans ce sommet
 			if(nextNode[i]==a.getTarget()){
 				isPossible=0;
 			}
+			//sinon on augmente la taille du sous-circuit actuelle
 			if(nextNode[i]!=-1){
 				currentPathSize++;
 			}
@@ -78,14 +81,7 @@ int DecreasingArc::isSuitable(const Arc& a){
 		}
 	}
 
-
-
-	if(isPossible){
-		return 1;
-	}
-	else{
-		return 0;
-	}
+	return isPossible;
 }
 
 
@@ -110,17 +106,20 @@ Arc* DecreasingArc::retrieveNext(){
 		}
 	}
 	
-
 	return a;
 }
 
 
-void DecreasingArc::addSelectedArc(const Arc& a){
+void DecreasingArc::addSelectedArc(const TSPData &data, const Arc& a){
 
 	if(start==-1){
 		start = a.getSource();
 	}
 	selectedArcs.push_back(a);
+
+	int val = data.getVal(a.getSource(),a.getTarget());
+	totalLength+=val;
+
 	nextNode[a.getSource()]=a.getTarget();
 }
 
@@ -145,23 +144,6 @@ int DecreasingArc::getTotalLength() const{
 	return totalLength;
 }
 
-void DecreasingArc::constructPath(const TSPData &data){
-
-	int i =0;
-	int next = start;
-
-	selectedArcs.clear();
-
-	while(i<nodesNumber){
-		int val = data.getVal(next,nextNode[next]);
-		Arc a(next,nextNode[next],val);
-		totalLength+=val;
-		selectedArcs.push_back(a);
-		next = nextNode[next];
-		i++;
-	}
-}
-
 char* DecreasingArc::getPathString() const{
 
 	char* path;
@@ -177,13 +159,9 @@ char* DecreasingArc::getPathString() const{
 
 ostream& operator<<(ostream& os,const DecreasingArc& da )
 {
-	int i;
-	int nodes = da.getNodesNumber();
-
-	for(i=0; i < nodes; i++) {
-		os << da.getArcFromPath(i).getSource() << "," << da.getArcFromPath(i).getTarget() << " ; ";
-	}
-	os << " taille total : "<< da.getTotalLength() << endl;
-
+  	os << "DecreasingArc" << endl;
+  	os << "\tNodes number : " << da.getNodesNumber() << endl;
+  	os << "\tPath : " << da.getPathString() << endl;
+  	os << "\tTotal distance : " << da.getTotalLength() << endl;
     return os;
 }

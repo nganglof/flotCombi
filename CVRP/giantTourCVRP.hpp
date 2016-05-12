@@ -9,7 +9,7 @@ using namespace std;
 
 struct Tour{
 	std::vector<int> clients;
-	int totalLength;
+	unsigned int totalLength;
 };
 
 class GiantTour{
@@ -23,12 +23,12 @@ class GiantTour{
 		std::vector<ArcCVRP> shortestPath;
 		int* permuNodes;
 		int totalLength;
-
+		char* methode;
 		std::vector<Tour> tours;
 
 	public :
 		GiantTour();
-		GiantTour(const CVRPData &data, char* path);
+		GiantTour(const CVRPData &data, char* path, int meth);
 		~GiantTour();
 
 		void rearrangePath();
@@ -48,9 +48,15 @@ class GiantTour{
 		void displayArcs(const CVRPData& data);
 		void displayTours();
 
+		unsigned int getNbNodes()const;
+		unsigned int getCapacity()const;
+		int getNbTours() const;
+		char* getMethode() const;
+		char* getToursString() const;
+
 		void getTours(const CVRPData &data);
 
-		//friend ostream& operator<<(ostream& os ,const GiantTour& gt );
+		friend ostream& operator<<(ostream& os ,const GiantTour& gt );
 };
 
 #endif

@@ -57,7 +57,6 @@ public :
 		getline(in,s); // ligne de blabla
 
 		in >> s; // blabla
-
 		in >> size; // lecture de la taille
 
 		matrix = new long* [size];

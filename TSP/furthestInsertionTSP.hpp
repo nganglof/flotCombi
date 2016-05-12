@@ -11,14 +11,19 @@ private :
   std::vector<long>* townsList;
   std::vector<long>* route;
   int size;
+  int totalDist;
   
 public :
   FurthestInsertion();
   FurthestInsertion(const TSPData &data);
   ~FurthestInsertion();
   std::pair <int, int> findFurthest(const TSPData &data);
+  char* getPathString()const;
+  int getSize()const;
+  int getTotalDist()const;
 
-  char* getPathString();
+  friend ostream& operator<<(ostream& os ,const FurthestInsertion& fi );
+
 };
 
 #endif

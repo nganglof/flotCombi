@@ -15,48 +15,60 @@
 #include "decreasingArcTSP.hpp"
 #include "closestInsertionTSP.hpp"
 #include "furthestInsertionTSP.hpp"
+#include <sys/time.h>
 
 using namespace std;
 
+unsigned long getTime(struct timeval tv1, struct timeval tv2){
+	return (tv2.tv_sec-tv1.tv_sec)*1000000+(tv2.tv_usec-tv1.tv_usec);
+}
 
 void usage (char* s){
 	cout << "Usage: " << s << " <int> <data.tsp>" << endl;
 	exit(EXIT_FAILURE);
 }
 
-
 void run_decreasingArc(const TSPData &data){
+
+  	struct timeval tv1, tv2;
+  	gettimeofday(&tv1, NULL);
 
 	DecreasingArc DA(data);
 	while(!DA.isEmpty()){
-
 		Arc* next = DA.retrieveNext();
-		if(next!= NULL){
-			DA.addSelectedArc(*next);
-		}
+		if(next!= NULL)
+			DA.addSelectedArc(data,*next);
 	}
+	cout << DA;
 
-	DA.constructPath(data);
-	cout << DA << endl;
-	cout << DA.getPathString() << endl;
-
+	gettimeofday(&tv2, NULL);
+	cout << "\tAlgorithme executé en " << getTime(tv1,tv2) << "ms" << endl;
 }
 
 void run_closestInsertion(const TSPData &data){
-  ClosestInsertion CI(data);
-  CI.path();
-  cout << CI << endl;
-  printf("cheùin _%s_\n",CI.getPathString());
+
+	struct timeval tv1, tv2;
+	gettimeofday(&tv1, NULL);
+
+	ClosestInsertion CI(data);
+	CI.path();
+	cout << CI;
+
+	gettimeofday(&tv2, NULL);
+	cout << "\tAlgorithme executé en " << getTime(tv1,tv2) << "ms" << endl;
 }
-
-
 
 void run_furthestInsertion(const TSPData &data){
+
+	struct timeval tv1, tv2;
+	gettimeofday(&tv1, NULL);
+
 	FurthestInsertion FI(data);
-	printf("path : %s\n",FI.getPathString());
+  	cout << FI;
+
+	gettimeofday(&tv2, NULL);
+	cout << "\tAlgorithme executé en " << getTime(tv1,tv2) << "ms" << endl;
 }
-
-
 
 #define PARAM 2
 int main(int argc, char * argv[]) {
@@ -66,7 +78,6 @@ int main(int argc, char * argv[]) {
 
 	fstream toto(argv[2], fstream::in);
 	TSPData data(toto);
-
 	switch(atoi(argv[1])){
 
 		case 1 :
@@ -86,6 +97,9 @@ int main(int argc, char * argv[]) {
 
 		case 4 :
 			//comparaison des trois algo
+			run_closestInsertion(data);
+			run_decreasingArc(data);
+			run_furthestInsertion(data);
 		break;
 	}
 

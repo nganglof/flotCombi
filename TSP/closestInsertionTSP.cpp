@@ -13,8 +13,10 @@ ClosestInsertion::ClosestInsertion(const TSPData &data){
   size = data.getSize();
   srand(time(NULL));
   length = 0;
-  next_town = rand()%(size - 1); 
-  
+
+  //next_town = rand()%(size - 1); 
+  next_town = 0;
+
   closest = size + 1; 
   visited->insert(it,next_town);  
   nodesPath.push_back(next_town);
@@ -25,7 +27,6 @@ ClosestInsertion::~ClosestInsertion(){
 }
 
 void ClosestInsertion::path(){
-  cout << "taille visited : " << visited->size() << " et size : " << size << endl;
 
   while((int)visited->size()<size){
     
@@ -52,29 +53,30 @@ void ClosestInsertion::path(){
  
 }
 
-char* ClosestInsertion::getPathString(){
+char* ClosestInsertion::getPathString()const{
 
   char* path = new char[size];
   memset(path,'\0',size);
-  for(int i=0; i < size-1; i++) {
+  for(int i=0; i < size; i++) {
     asprintf(&path,"%s%d,",path,nodesPath[i]);
   } 
-  asprintf(&path,"%s%d",path,nodesPath[size-1]);
-
+  asprintf(&path,"%s%d",path,nodesPath[size]);
   return path;
-
 }
 
+int ClosestInsertion::getSize()const{
+  return size;
+}
+
+float ClosestInsertion::getLength()const{
+  return length;
+}
 
 ostream& operator<<(ostream& os,const ClosestInsertion& ci )
 {
-	int i;
-	int nodes = ci.size;
-
-	for(i=0; i < nodes+1; i++) {
-	  os << ci.nodesPath[i] << "\t" ;
-	}
-	os << " / taille total : "<< ci.length << endl;
-
+    os << "ClosestInsertion" << endl;
+    os << "\tNodes number : " << ci.getSize() << endl;
+    os << "\tPath : " << ci.getPathString() << endl;
+    os << "\tTotal distance : " << ci.getLength() << endl;
     return os;
 }

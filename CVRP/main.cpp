@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/time.h>
 
 #include "CVRP.hpp"
 #include "giantTourCVRP.hpp"
@@ -20,24 +20,26 @@
 #include "../TSP/decreasingArcTSP.hpp"
 #include "../TSP/furthestInsertionTSP.hpp"
 #include "../TSP/closestInsertionTSP.hpp"
-
 #include "../TSP/TSP.h"
 
 using namespace std;
 
+unsigned long getTime(struct timeval tv1, struct timeval tv2){
+	return (tv2.tv_sec-tv1.tv_sec)*1000000+(tv2.tv_usec-tv1.tv_usec);
+}
 
 TSPData convertCVRPtoTSP(const CVRPData &data){
-
 	TSPData convert(data.getSize(),data.getDistances());
 	return convert; 
 }
 
+/*
 void run_clarkeWright(const CVRPData &data){
   clarkeWrightCVRP CWCVRP(data);
   clarkeWrightProcedure(data);
   cout << CWCVRP << endl;
 
-}
+}*/
 
 char* retrieveTSP(int methode,const TSPData & data){
 	
@@ -65,20 +67,23 @@ char* retrieveTSP(int methode,const TSPData & data){
 	return path;
 }
 
-void run_giantTour(const CVRPData &data, int methode){
+void run_giantTour(const CVRPData &data, int methode, char* instance){
 
+  	struct timeval tv1, tv2;
+  	gettimeofday(&tv1, NULL);
 
 	TSPData conv = convertCVRPtoTSP(data);
 	char* path = retrieveTSP(methode,conv);
 
-	GiantTour DA(data,path);
-	
+
+	GiantTour DA(data,path,methode);
 	DA.addShortcuts(data);
 	DA.getShortestPath(data);
 	DA.getTours(data);
-	DA.displayTours();
 
-	printf("methode : %d\n",methode);
+	cout << instance << DA;
+	gettimeofday(&tv2, NULL);
+	cout << ", en " << getTime(tv1,tv2) << "ms" << endl;
 }
 
 void usage (char* s){
@@ -94,8 +99,7 @@ int main(int argc, char * argv[]) {
 
 	CVRPData cvrp(argv[2]);
 
-    printf("nb argu : %d\n",argc);
-    int methode = 2; //methode par defaut
+    int methode = 3; //methode par defaut
     if(argc>3){
     	methode = atoi(argv[3]);
     }
@@ -109,7 +113,7 @@ int main(int argc, char * argv[]) {
 
 		case 2 :
 			//algo 2 : giantTour
-			run_giantTour(cvrp,methode);
+			run_giantTour(cvrp,methode,argv[2]);
 		break;
 
 		case 4 :

@@ -27,14 +27,13 @@ class DecreasingArc{
 		Arc* retrieveNext();
 		int isSuitable(const Arc& a);
 		int isEmpty()const;
-		void addSelectedArc(const Arc& a);
+		void addSelectedArc(const TSPData &data, const Arc& a);
 
 		int getPathSize()const;
 
 		int getNodesNumber() const;
 		int getTotalLength() const;
 		Arc getArcFromPath(int i) const;
-		void constructPath(const TSPData& data);
 		char* getPathString() const;
 		
 		friend ostream& operator<<(ostream& os ,const DecreasingArc& da );

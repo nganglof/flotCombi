@@ -15,30 +15,45 @@ GiantTour::GiantTour(){
 
 }
 
-GiantTour::GiantTour(const CVRPData &data, char* path){
+GiantTour::GiantTour(const CVRPData &data, char* path, int meth){
 
-	printf("Debut Giant\n");
-	printf("path : %s\n",path);
+	if(meth==1){
+		int n = strlen("ClosestInsertionTSP")+1;
+		methode = new char[n];
+		strcpy(methode,"ClosestInsertionTSP");
+	}	
+	else if(meth==2){
+		int n = strlen("DecreasingArcTSP")+1;
+		methode = new char[n];
+		strcpy(methode,"DecreasingArcTSP");
+	}
+	else{
+		int n = strlen("FurthestInsertion")+1;
+		methode = new char[n];
+		strcpy(methode,"FurthestInsertion");
+	}
 
 	totalLength=0;
-
 	nodes = data.getSize();
 	capacity = data.getCapacity();
 
-	printf("Capacity : %d\n",capacity);
+
 	int cpt = 0;
 
-	TSPpath = new int[nodes];
-	permuNodes = new int[nodes];
+	int number = (int)nodes;
+	TSPpath = new int[number];
+	permuNodes = new int[number];
 
 	char* tmp =  strtok( path,",");
-	TSPpath[cpt]=atoi(tmp);	
-	while(tmp!=NULL){
-		TSPpath[cpt]=atoi(tmp);
+	TSPpath[cpt]=atoi(tmp);
+
+	while(tmp!=NULL && (cpt < number)){
+		int nd = atoi(tmp);
+		TSPpath[cpt]=nd;
 		cpt++;
 		tmp = strtok(NULL,",");
 	}
-
+	
 	//remettre le chemin a partir du depot
 	if(TSPpath[0]!=0){
 		rearrangePath();
@@ -61,21 +76,15 @@ GiantTour::GiantTour(const CVRPData &data, char* path){
 }
 
 GiantTour::~GiantTour(){
-
-
+	arcs.clear();
+	shortestPath.clear();
+	delete[] methode;
+	delete[] permuNodes;
 }
 
 void GiantTour::rearrangePath(){
 
 	int*  rearrange = new int[nodes];
-
-	printf("current path : ");
-
-	for (unsigned int i = 0; i < nodes; ++i)
-	{
-		printf("%d ",TSPpath[i]);
-	}
-	printf("\n");
 
 	int start = 0;
 	while(TSPpath[start]!=0)
@@ -84,13 +93,9 @@ void GiantTour::rearrangePath(){
 	for (unsigned int i = 0; i < nodes; ++i)
 		rearrange[i]=TSPpath[(start+i)%nodes];
 
-	printf("rearrange path : ");
 	for (unsigned int i = 0; i < nodes; ++i)
-	{
 		TSPpath[i]=rearrange[i];
-		printf("%d ",TSPpath[i]);
-	}
-	printf("\n");
+
 	delete[] rearrange;
 
 }
@@ -240,10 +245,8 @@ void GiantTour::getTours(const CVRPData& data){
 	int j,i;
 
 	for(i=(shortestPath.size()-1);i>=0;i--){
-
 		Tour t;
 		t.totalLength=0;
-
 		t.totalLength += data.getDistance(0,getRealNodeFromPos(getPosFromRealNode(shortestPath[i].getSource())+1));
 
 		for(j = (getPosFromRealNode(shortestPath[i].getSource())+1) ; j<(getPosFromRealNode(shortestPath[i].getTarget())) ; j++){
@@ -251,12 +254,14 @@ void GiantTour::getTours(const CVRPData& data){
 			int reali = getRealNodeFromPos(j);
 			t.clients.push_back(reali);
 			int len = data.getDistance(reali, getRealNodeFromPos(j+1));
-
 			t.totalLength +=len;
 		}
 		t.totalLength += data.getDistance(getRealNodeFromPos(j),0);
 		t.clients.push_back(shortestPath[i].getTarget());
+		
 		tours.push_back(t);
+
+		totalLength += t.totalLength;
 	}
 }
 
@@ -269,7 +274,7 @@ void GiantTour::displayArcs(const CVRPData& data){
 
 void GiantTour::displayTours(){
 
-	cout << "Nombre de tournées : "<<  tours.size() << endl;
+	cout << "\t\tNombre de tournées : "<<  tours.size() << endl;
 	for(unsigned int i=0;i<tours.size();i++){
 		totalLength += tours[i].totalLength;
 		cout << "\tTour " << i << " de distance " << tours[i].totalLength << endl;
@@ -279,8 +284,37 @@ void GiantTour::displayTours(){
 	cout << "\t\t\tpour une distance total de " << totalLength << endl;
 }
 
-/*
-ostream& operator<<(ostream& os ,const GiantTour& gt ){
+char* GiantTour::getToursString() const{
+	char * s;
+	asprintf(&s,"%ld tournées\n",tours.size());
+	for(unsigned int i=0;i<tours.size();i++){
+		asprintf(&s,"%sTour #%d de distance %d : ",s,i+1,tours[i].totalLength);
+		for(unsigned int j=0;j<tours[i].clients.size();j++)
+			asprintf(&s,"%s%d ",s,tours[i].clients[j]);
+		asprintf(&s,"%s\n",s);
+	}
+	asprintf(&s,"%spour une distance totale de %d",s,totalLength);
+	return s;
+}
 
-	return os;
-}*/
+unsigned int GiantTour::getNbNodes()const{
+	return nodes;
+}
+
+unsigned int GiantTour::getCapacity() const{
+	return capacity;
+}
+
+int GiantTour::getNbTours() const{
+	return tours.size();
+}
+
+char* GiantTour::getMethode() const{
+	return methode;
+}
+
+ostream& operator<<(ostream& os ,const GiantTour& gt ){
+  	os << " avec " << gt.getMethode() <<endl;
+  	os << "Tours : " << gt.getToursString();
+    return os;
+}
