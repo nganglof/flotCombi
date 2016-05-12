@@ -7,7 +7,7 @@ TSP = ../TSP/decreasingArcTSP.o ../TSP/arc.o ../TSP/closestInsertionTSP.o ../TSP
 
 default: clean main
 
-main: main.cpp CVRP.o giantTourCVRP.o arcCVRP.o
+main: main.cpp CVRP.o giantTourCVRP.o arcCVRP.o clarkeWrightCVRP.cpp
 	$(CC) $(CFLAGS) -o $@  $^ $(TSP)
 
 CVRP.o: CVRP.cpp

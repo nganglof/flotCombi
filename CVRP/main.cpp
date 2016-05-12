@@ -34,8 +34,8 @@ TSPData convertCVRPtoTSP(const CVRPData &data){
 
 void run_clarkeWright(const CVRPData &data){
   clarkeWrightCVRP CWCVRP(data);
-  CWVRP.clarkeWrightProcedure(data);
-  cout << CWCVRP << endl;
+  CWCVRP.clarkeWrightProcedure(data);
+  //cout << CWCVRP << endl;
 
 }
 
@@ -112,7 +112,7 @@ int main(int argc, char * argv[]) {
 			run_giantTour(cvrp,methode);
 		break;
 
-		case 4 :
+		case 3 :
 			//comparaison des trois algo
 		break;
 	}

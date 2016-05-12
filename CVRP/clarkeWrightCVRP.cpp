@@ -5,7 +5,7 @@
 #include <list>
 #include <cstring>
 #include <functional>
-
+#include <cstdio>
 #include "clarkeWrightCVRP.hpp"
 #include "tour.hpp"
 #include "list_tour.hpp"
@@ -49,16 +49,16 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
     L.name = new char[strlen("Liste resultat")];
     strcpy(L.name,"Liste resultat");
     for(int i=0; i < data.getSize(); i++){
-      for(int j= 0; j < data.getSize(); j++){
 	// create a tour made of single visit
 	struct tour tmp_tour;
 	tmp_tour.id = i;
 	tmp_tour.clients_order.push_back(i + 'i');
 	tmp_tour.length = 0;
-	
 	L.tour_list.push_back(tmp_tour);
-      }
+	L.size++;
     }
+    printf("La taille de L est: %d\n",L.size);
+    printf("Jusque la cest bon !!!\n");
     while(thereAreConcatableLists(data,L)){
     int gain = 0;
     struct tour tour_i;
@@ -82,9 +82,9 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
     tour_i.clients_order.splice(tour_i.clients_order.end(),tour_j.clients_order); 
     tour_i.length++;
     L.size--; //updating size of the set 
-    
+    printf("fusion de 2:%d\n", L.size);
   }
-
+    printf("Le nb final de tournees vaut: %d\n", L.size);
   //cout << res << endl;
 }
 
