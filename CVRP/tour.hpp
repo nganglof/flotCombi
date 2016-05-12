@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+/* This class implements a tour */ 
 struct tour{
   list<char> clients_order;
   int id;

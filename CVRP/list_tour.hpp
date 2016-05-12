@@ -3,6 +3,10 @@
 
 using namespace std;
 
+
+/*This class implements a set of tour */ 
+
+
 struct list_tour{
   list<struct tour> tour_list;
   char* name;

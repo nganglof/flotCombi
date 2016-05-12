@@ -4,14 +4,26 @@
 
 #include "CVRP.hpp"
 
+
+/*This class implements Clarke & Wright algorithm */ 
+
+
 using namespace std;
 
 class clarkeWrightCVRP{
 
+
+  /* Attributes */ 
   int Capacity;
   int NbNodes;
   int ** Distances;
   int * Demands;
+
+
+
+
+  /*Methods*/ 
+
 
 public:
   clarkeWrightCVRP(const CVRPData&);
