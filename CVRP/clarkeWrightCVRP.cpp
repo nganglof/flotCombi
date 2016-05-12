@@ -30,10 +30,11 @@ clarkeWrightCVRP::~clarkeWrightCVRP(){}
 
 int clarkeWrightCVRP::savingPerConcatetion(const CVRPData& data,struct tour i, struct tour j){
   int gain = 0;
-  list<char>::iterator it_i = i.clients_order.begin();
-  list<char>::iterator it_j = j.clients_order.begin();
-  int before_value = i.length + j.length + data.getDistance(*i.clients_order.end(),*j.clients_order.begin());
-  int after_value = i.length + j.length + data.getDistance(*i.clients_order.end(),*j.clients_order.begin());
+  int before_value = i.length + j.length + data.getDistance(i.clients_order.back(),j.clients_order.front());
+  printf("Avant le cout etait: %d\n",before_value);
+  printf("le cout entre deux tours vaut : %d\n", data.getDistance(i.clients_order.back(),j.clients_order.front()));
+  int after_value = i.length + j.length + data.getDistance(i.clients_order.back(),j.clients_order.front());
+  printf("Apres le cout etait: %d\n",after_value);
   gain = before_value - after_value;
 
   return gain;
@@ -59,31 +60,38 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
     }
     printf("La taille de L est: %d\n",L.size);
     printf("Jusque la cest bon !!!\n");
-    while(thereAreConcatableLists(data,L)){
     int gain = 0;
-    struct tour tour_i;
-    struct tour tour_j;
-    list<char>::iterator it_i = tour_i.clients_order.begin();
-    list<char>::iterator it_j = tour_j.clients_order.begin();
-    list<struct tour>::iterator it_L = L.tour_list.begin();
-    for(int i = 0 ; i < L.size ; i++){
-      for(int j = 0; j < L.size; j++){
-	advance(it_i,i);
-	advance(it_j,j);
-	if ( (i != j) && (savingPerConcatetion(data,tour_i,tour_j)> gain ))  {
-	  tour_j.id = j; //stock good candidates
-	  tour_i.id = i;
-	  gain = savingPerConcatetion(data,tour_i,tour_j);                                      
+    printf("gain init :%d\n", gain);
+
+    while(thereAreConcatableLists(data,L)){
+    
+    
+      struct tour tour_i;
+      struct tour tour_j;
+      list<char>::iterator it_i = tour_i.clients_order.begin();
+      list<char>::iterator it_j = tour_j.clients_order.begin();
+      list<struct tour>::iterator it_L = L.tour_list.begin();
+      for(int i = 0 ; i < L.size ; i++){
+	for(int j = 0; j < L.size; j++){
+	  advance(it_i,i);
+	  advance(it_j,j);
+	  if ( (i != j) && (savingPerConcatetion(data,tour_i,tour_j) > gain ))  {
+	    tour_j.id = j; //stock good candidates
+	    tour_i.id = i;
+	    gain = savingPerConcatetion(data,tour_i,tour_j);     
+	    printf("gain trouve a : %d\n",gain);
 	}
       }
     }
     // concate the two best tours
     //advance(it_i,tour_i.clients_order.end());
-    tour_i.clients_order.splice(tour_i.clients_order.end(),tour_j.clients_order); 
-    tour_i.length++;
-    L.size--; //updating size of the set 
-    printf("fusion de 2:%d\n", L.size);
-  }
+      //if(gain != 0){
+	tour_i.clients_order.splice(tour_i.clients_order.end(),tour_j.clients_order); 
+	tour_i.length++;//updating size of first list
+	L.size--; //updating size of the set 
+	printf("fusion de 2:%d\n", L.size);
+	//}
+    }
     printf("Le nb final de tournees vaut: %d\n", L.size);
   //cout << res << endl;
 }
