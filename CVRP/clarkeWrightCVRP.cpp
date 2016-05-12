@@ -19,6 +19,7 @@ clarkeWrightCVRP::clarkeWrightCVRP(const CVRPData& data){
   NbNodes = data.getSize();
   Distances = data.getDistances();
   Demands = data.getDemands();
+  
   }
 
 /*Destructor */ 
@@ -45,6 +46,9 @@ int clarkeWrightCVRP::savingPerConcatetion(const CVRPData& data,struct tour i, s
 void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
   struct list_tour L;
 
+  printf("demande de %d : %d\n",0,data.getDemand(0));
+  printf("demande de %d : %d\n",1,data.getDemand(1));
+  printf("demande de %d : %d\n",5,data.getDemand(5));
 
     L.size = 0; // tour_list is empty by default
     L.name = new char[strlen("Liste resultat")];
@@ -53,11 +57,20 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
 	// create a tour made of single visit
 	struct tour tmp_tour;
 	tmp_tour.id = i;
-	tmp_tour.clients_order.push_back(i + 'i');
+	tmp_tour.clients_order.push_back(i + '0');
 	tmp_tour.length = 0;
+	tmp_tour.used_capacity = data.getDemand(i);
 	L.tour_list.push_back(tmp_tour);
 	L.size++;
     }
+
+    printf("sommet : %c\n",L.tour_list.front().clients_order.front());
+    list<tour>::iterator it = L.tour_list.begin();
+    for(unsigned int i=0 ; i<L.tour_list.size();i++){
+      printf("tour %d de cap %d\n",i,(*it).used_capacity);
+      advance(it,i+1);
+}
+
     printf("La taille de L est: %d\n",L.size);
     printf("Jusque la cest bon !!!\n");
     int gain = 0;
@@ -72,13 +85,14 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
       struct tour tmp_j;
       list<char>::iterator it_i = tour_i.clients_order.begin();
       list<char>::iterator it_j = tour_j.clients_order.begin();
-      list<struct tour>::iterator it_L = L.tour_list.begin();
+      list<struct tour>::iterator it_Li = L.tour_list.begin();
+      list<struct tour>::iterator it_Lj = L.tour_list.begin();
 
-      for(int i = 0 ; i < L.size ; i++){
-	for(int j = 1; j < L.size - 1; j++){
-	  advance(it_i,i);
-	  advance(it_j,j);
-	  if ( (i != j) && (savingPerConcatetion(data,tour_i,tour_j) > gain ))  {
+      for(int i = 0 ; i < L.size -1  ; i++){
+	for(int j = 1; j < L.size; j++){
+	  advance(it_Li,i);
+	  advance(it_Lj,j);
+	  if ( (i != j)  && (areConcatable(data,L,tour_i,tour_j)) && (savingPerConcatetion(data,tour_i,tour_j) > gain ))  {
 	    gain = savingPerConcatetion(data,tour_i,tour_j); 
 	    tmp_i = tour_i; //stock good candidates
 	    tmp_j = tour_j;
@@ -90,7 +104,9 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
     // concate the two best tours
     //advance(it_i,tour_i.clients_order.end());
       if(gain != 0){
+	
 	tmp_i.clients_order.splice(tmp_i.clients_order.end(),tmp_j.clients_order); 
+	tmp_i.used_capacity += tmp_j.used_capacity;
 	tmp_i.length++;//updating size of first list
 	tour_i.length ++;
 	L.size--; //updating size of the set 
@@ -113,8 +129,11 @@ bool clarkeWrightCVRP::thereAreConcatableLists(const CVRPData& data,struct list_
       for(int j = 1; j < L.size - 1; j++){
 	advance(it_i,i);
 	advance(it_j,j);
-	if ( (*it_j).used_capacity + (*it_j).used_capacity < data.getCapacity())
+	if ( ((*it_j).used_capacity + (*it_j).used_capacity) < data.getCapacity()){
+	  //printf("total ? %d et cap %d \n", (*it_j).used_capacity + (*it_j).used_capacity,data.getCapacity()); 
+
 	  return true;
+	}
       }
     }
     return false;
@@ -124,7 +143,7 @@ bool clarkeWrightCVRP::thereAreConcatableLists(const CVRPData& data,struct list_
 }
 
 
-bool clarkeWrightCVRP::areConcatable(CVRPData& data,struct list_tour L ,struct tour tour_i, struct tour tour_j){
+bool clarkeWrightCVRP::areConcatable(const CVRPData& data,struct list_tour L ,struct tour tour_i, struct tour tour_j){
   list<struct tour>::iterator it_i = L.tour_list.begin();
   list<struct tour>::iterator it_j = L.tour_list.begin();
   if ( (*it_j).used_capacity + (*it_j).used_capacity < data.getCapacity())
