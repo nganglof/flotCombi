@@ -14,7 +14,12 @@
 
 /* Constructor initializes the object */ 
 
-clarkeWrightCVRP::clarkeWrightCVRP(const CVRPData& data){}
+clarkeWrightCVRP::clarkeWrightCVRP(const CVRPData& data){
+  Capacity = data.getCapacity();
+  NbNodes = data.getSize();
+  Distances = data.getDistances();
+  Demands = data.getDemands();
+  }
 
 /*Destructor */ 
 clarkeWrightCVRP::~clarkeWrightCVRP(){}
