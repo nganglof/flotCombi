@@ -37,8 +37,8 @@ void ClosestInsertion::path(){
       const bool is_in = visited->count(j);
 
       if ((matrix[next_town][j] < closest) && ( next_town != j) && (!is_in)){
-	closest = matrix[next_town][j];
-	closestTown = j;
+      	closest = matrix[next_town][j];
+      	closestTown = j;
       }
     }
 
@@ -52,6 +52,18 @@ void ClosestInsertion::path(){
  
 }
 
+char* ClosestInsertion::getPathString(){
+
+  char* path = new char[size];
+  memset(path,'\0',size);
+  for(int i=0; i < size-1; i++) {
+    asprintf(&path,"%s%d,",path,nodesPath[i]);
+  } 
+  asprintf(&path,"%s%d",path,nodesPath[size-1]);
+
+  return path;
+
+}
 
 
 ostream& operator<<(ostream& os,const ClosestInsertion& ci )

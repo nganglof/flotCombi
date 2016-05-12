@@ -21,7 +21,8 @@ public:
   
   ClosestInsertion(const TSPData&);
   ~ClosestInsertion();
-
+  char* getPathString();
+  
   friend ostream& operator<<(ostream& os ,const ClosestInsertion& ci );
 
   void path();

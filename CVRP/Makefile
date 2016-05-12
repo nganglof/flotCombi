@@ -3,7 +3,7 @@ CC = g++
 CFLAGS  = -Wall -g
 LDFLAGS = 
 
-TSP = ../TSP/interfaceTSP.o	../TSP/decreasingArcTSP.o ../TSP/arc.o ../TSP/closestInsertionTSP.o ../TSP/furthestInsertionTSP.o
+TSP = ../TSP/decreasingArcTSP.o ../TSP/arc.o ../TSP/closestInsertionTSP.o ../TSP/furthestInsertionTSP.o
 
 default: clean main
 

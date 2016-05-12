@@ -17,6 +17,8 @@ public :
   FurthestInsertion(const TSPData &data);
   ~FurthestInsertion();
   std::pair <int, int> findFurthest(const TSPData &data);
+
+  char* getPathString();
 };
 
 #endif

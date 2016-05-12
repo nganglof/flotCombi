@@ -5,7 +5,7 @@ LDFLAGS =
 
 default: clean main
 
-main: main.cpp arc.o decreasingArcTSP.o closestInsertionTSP.o furthestInsertionTSP.o interfaceTSP.o
+main: main.cpp arc.o decreasingArcTSP.o closestInsertionTSP.o furthestInsertionTSP.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 decreasingArcTSP.o: decreasingArcTSP.cpp
@@ -19,9 +19,6 @@ furthestInsertionTSP.o: furthestInsertionTSP.cpp
 
 arc.o: arc.cpp
 	$(CC) $(CFLAGS) -o arc.o -c arc.cpp
-
-interfaceTSP.o: interfaceTSP.cpp
-	$(CC) $(CFLAGS) -o interfaceTSP.o -c interfaceTSP.cpp
 	
 clean:
 	rm -rf *.o a.out
