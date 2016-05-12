@@ -7,21 +7,19 @@
 using namespace std;
 
 class clarkeWrightCVRP{
+
   int Capacity;
   int NbNodes;
   int ** Distances;
   int * Demands;
 
-
-
-
 public:
   clarkeWrightCVRP(const CVRPData&);
   ~clarkeWrightCVRP();
+  int savingPerConcatetion(const CVRPData&,struct tour, struct tour);
   void clarkeWrightProcedure(const CVRPData&);
-  int savingPerConcatetion();
-  int areConcatable(struct tour, struct tour);
 
+  bool thereAreConcatableLists(const CVRPData&,struct list_tour);
 
 };
 
