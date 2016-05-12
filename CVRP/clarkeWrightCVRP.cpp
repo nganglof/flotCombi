@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <list>
 #include <cstring>
+#include <functional>
 
 #include "clarkeWrightCVRP.hpp"
 #include "tour.hpp"
@@ -72,7 +73,8 @@ void clarkeWrightCVRP::clarkeWrightProcedure(const CVRPData& data){
       }
     }
     // concate the two best tours
-    // L.list_tour[tour_i].splice(list_tour[tour_i].end(),list_tour[tour_j].begin()); 
+    //advance(it_i,tour_i.clients_order.end());
+    tour_i.clients_order.splice(tour_i.clients_order.end(),tour_j.clients_order); 
     tour_i.length++;
     L.size--; //updating size of the set 
     
