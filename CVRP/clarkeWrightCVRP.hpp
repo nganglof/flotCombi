@@ -31,9 +31,13 @@ public:
   ~clarkeWrightCVRP();
   int savingPerConcatetion(const CVRPData&,struct tour, struct tour);
   void clarkeWrightProcedure(const CVRPData&);
+int getiFroma(char c);
 
   bool thereAreConcatableLists(const CVRPData&,struct list_tour);
   bool areConcatable(const CVRPData&,struct list_tour L, struct tour, struct tour);
+
+void displayTour(struct list_tour L);
+
 };
 
 #endif
