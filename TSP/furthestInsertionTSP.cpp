@@ -4,9 +4,11 @@
 #include <iterator>
 //#include <array>
 #include <cstdio>
+#include <cstdlib>
 #include "furthestInsertionTSP.hpp"
 #include <utility>
 #include <algorithm>
+#include <string.h>
 
 FurthestInsertion::FurthestInsertion(){
 
@@ -178,4 +180,18 @@ std::pair <int, int> FurthestInsertion::findFurthest(const TSPData &data){
     }
   }
   return furthest;
+}
+
+
+char* FurthestInsertion::getPathString(){
+
+  char* path = new char[size];
+  memset(path,'\0',size);
+  for(std::vector<long>::iterator iter = route->begin(); iter != route->end(); ++iter){
+    int i = std::distance(route->begin(), iter);
+    asprintf(&path,"%s%ld,",path,route->at(i));
+  } 
+  asprintf(&path,"%s%ld",path,route->front());
+
+  return path;
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <limits.h>
 #include <algorithm>
 #include <unistd.h>
 #include <stdio.h>
@@ -16,20 +17,47 @@ GiantTour::GiantTour(){
 
 GiantTour::GiantTour(const CVRPData &data, char* path){
 
-	nodes = data.getSize();
-	TSPpath = new int[nodes];
-	int cpt=0;
-	char* tmp =  strtok( path,",");
+	printf("Debut Giant\n");
+	printf("path : %s\n",path);
 
+	totalLength=0;
+
+	nodes = data.getSize();
+	capacity = data.getCapacity();
+
+	printf("Capacity : %d\n",capacity);
+	int cpt = 0;
+
+	TSPpath = new int[nodes];
+	permuNodes = new int[nodes];
+
+	char* tmp =  strtok( path,",");
+	TSPpath[cpt]=atoi(tmp);	
 	while(tmp!=NULL){
 		TSPpath[cpt]=atoi(tmp);
 		cpt++;
 		tmp = strtok(NULL,",");
 	}
 
-	for(unsigned int i=0;i<nodes;i++){
-		cout << "case" << i << ": " << TSPpath[i] << endl;
+	//remettre le chemin a partir du depot
+	if(TSPpath[0]!=0){
+		rearrangePath();
 	}
+
+	for(unsigned int i=0;i<(nodes-1);i++){
+
+		permuNodes[i]=TSPpath[i];
+		int newdist = data.getDistance(0,TSPpath[i+1]) + data.getDistance(TSPpath[i+1],TSPpath[0]);
+
+		ArcCVRP a(TSPpath[i],TSPpath[i+1],newdist);
+		arcs.push_back(a);
+	}
+	permuNodes[nodes-1]=TSPpath[nodes-1];
+
+	int newdist = data.getDistance(0,TSPpath[nodes-1]) + data.getDistance(TSPpath[nodes-1],TSPpath[0]);
+	ArcCVRP a(TSPpath[nodes-1],0,newdist);
+	arcs.push_back(a);
+
 }
 
 GiantTour::~GiantTour(){
@@ -37,31 +65,219 @@ GiantTour::~GiantTour(){
 
 }
 
+void GiantTour::rearrangePath(){
 
-void GiantTour::getShortestPath(const CVRPData &data){
+	int*  rearrange = new int[nodes];
 
-	std::vector<ArcCVRP> shortestPath;
-	std::vector<int> treatedNodes;
-	treatedNodes.push_back(0);
+	printf("current path : ");
 
-	int distFromStart[nodes];
-	distFromStart[0]=0;
-	
-	for(unsigned int i=1;i<nodes;i++){
-		distFromStart[i]= INT_MAX;
+	for (unsigned int i = 0; i < nodes; ++i)
+	{
+		printf("%d ",TSPpath[i]);
 	}
+	printf("\n");
 
-	while(treatedNodes.size()< nodes){
+	int start = 0;
+	while(TSPpath[start]!=0)
+		start++;
 
-		for (std::vector<ArcCVRP>::iterator it = arcs.begin() ; it != arcs.end(); ++it){
+	for (unsigned int i = 0; i < nodes; ++i)
+		rearrange[i]=TSPpath[(start+i)%nodes];
 
+	printf("rearrange path : ");
+	for (unsigned int i = 0; i < nodes; ++i)
+	{
+		TSPpath[i]=rearrange[i];
+		printf("%d ",TSPpath[i]);
+	}
+	printf("\n");
+	delete[] rearrange;
 
+}
 
+int GiantTour::getPosFromRealNode(int node){
+	for(unsigned int i=0;i<nodes;i++){
+		if(permuNodes[i]==node){
+			return i;
+		}
+	}
+	return -1;
+}
+
+int GiantTour::getRealNodeFromPos(int pos){
+	return permuNodes[pos];
+}	
+
+int GiantTour::isCapSufficient(const CVRPData &data,int posi, int posj){
+
+	unsigned int capNeeded = 0;
+	for(int k = posi ; k <= posj ; k++){
+		capNeeded += data.getDemand(getRealNodeFromPos(k));
+	}
+	return capNeeded <= capacity;
+}
+
+int GiantTour::isArcPresent(int posi, int posj){
+
+	int size = arcs.size();
+
+	int i = getRealNodeFromPos(posi);
+	int j = getRealNodeFromPos(posj);
+	for(int k=0;k<size;k++){
+		if(arcs[k].getSource()==i && arcs[k].getTarget()==j)
+			return 1;
+	}
+	return 0;
+}
+
+int GiantTour::isPossible(const CVRPData& data,int posi, int posj){
+
+	int poss = isArcPresent(posi,posj-1);
+
+	if (poss && isCapSufficient(data,posi+1,posj)){
+		return 1;
+	}
+	return 0;
+}
+
+void GiantTour::addShortcuts(const CVRPData &data){
+
+	for(int i=0;i<(int)nodes;i++){
+		for(int j=i+1;j<(int)nodes;j++){
+			int possible = isPossible(data,i,j);
+			if(possible){
+				ArcCVRP a(getRealNodeFromPos(i),getRealNodeFromPos(j),newArcCost(data,i+1,j));
+				arcs.push_back(a);
+			}
 		}
 	}
 }
 
+int GiantTour::newArcCost(const CVRPData& data, int posi, int posj){
 
+	int newCost = data.getDistance(0,getRealNodeFromPos(posi)) + data.getDistance(getRealNodeFromPos(posj),0);
+	for(int k=posi;k<posj;k++)
+		newCost+=data.getDistance(getRealNodeFromPos(k),getRealNodeFromPos(k+1));
+	return newCost;
+}
+
+
+int GiantTour::getNearestNode(int dist[], unsigned int size, int treated[]){
+	int shortestDist = INT_MAX;
+	int nearest = -1;
+	for(unsigned int i=0;i<size;i++){
+		if((shortestDist > dist[i]) && (treated[i]==0)){
+			shortestDist = dist[i];
+			nearest = i;
+		}
+	}
+	return nearest;
+}
+
+int GiantTour::getMinDist(int d1, int d2){
+	if(d1<d2)
+		return d1;
+	else
+		return d2;
+}
+
+void GiantTour::getShortestPath(const CVRPData &data){
+
+	int current;
+	int treatedNodes[nodes];
+	int distFromStart[nodes];
+	int previousNode[nodes];
+
+	distFromStart[0]=0;
+	
+	for(unsigned int i=0;i<nodes;i++){
+		distFromStart[i]= INT_MAX - 1;
+		treatedNodes[i]=0;
+		previousNode[i]=-1;
+	}
+	distFromStart[0]=0;
+	previousNode[0]=0;
+
+	for(unsigned int i=0;i<arcs.size();i++){
+		if(arcs[i].getSource() == 0){
+			distFromStart[arcs[i].getTarget()] = getMinDist(distFromStart[arcs[i].getTarget()],arcs[i].getDistance());
+			previousNode[arcs[i].getTarget()] = arcs[i].getSource();
+		}
+	}
+
+	unsigned int cptnode=0;
+
+	while(cptnode<nodes){
+
+		current = getNearestNode(distFromStart,nodes,treatedNodes);
+
+		for(unsigned int i=0;i<arcs.size();i++){
+
+			if(arcs[i].getSource() == current && !treatedNodes[arcs[i].getTarget()]){
+
+				int actual = distFromStart[arcs[i].getTarget()];
+				int newd = arcs[i].getDistance() + distFromStart[arcs[i].getSource()];
+				if(newd < actual){
+					distFromStart[arcs[i].getTarget()] = newd;
+					previousNode[arcs[i].getTarget()] = current;
+				}
+
+			}
+		}
+		cptnode++;
+		treatedNodes[current]=1;
+	}
+
+	while(current!=0){
+		ArcCVRP a(previousNode[current],current,distFromStart[current]);
+		shortestPath.push_back(a);
+		current=previousNode[current];
+	}
+}
+
+void GiantTour::getTours(const CVRPData& data){
+
+	int j,i;
+
+	for(i=(shortestPath.size()-1);i>=0;i--){
+
+		Tour t;
+		t.totalLength=0;
+
+		t.totalLength += data.getDistance(0,getRealNodeFromPos(getPosFromRealNode(shortestPath[i].getSource())+1));
+
+		for(j = (getPosFromRealNode(shortestPath[i].getSource())+1) ; j<(getPosFromRealNode(shortestPath[i].getTarget())) ; j++){
+
+			int reali = getRealNodeFromPos(j);
+			t.clients.push_back(reali);
+			int len = data.getDistance(reali, getRealNodeFromPos(j+1));
+
+			t.totalLength +=len;
+		}
+		t.totalLength += data.getDistance(getRealNodeFromPos(j),0);
+		t.clients.push_back(shortestPath[i].getTarget());
+		tours.push_back(t);
+	}
+}
+
+void GiantTour::displayArcs(const CVRPData& data){
+
+	for(unsigned int i=0;i<arcs.size();i++){
+		cout << "arc " << arcs[i].getSource() << "," << arcs[i].getTarget() << " distance : " << arcs[i].getDistance() << endl;
+	}
+}
+
+void GiantTour::displayTours(){
+
+	cout << "Nombre de tournées : "<<  tours.size() << endl;
+	for(unsigned int i=0;i<tours.size();i++){
+		totalLength += tours[i].totalLength;
+		cout << "\tTour " << i << " de distance " << tours[i].totalLength << endl;
+		for(unsigned int j=0;j<tours[i].clients.size();j++)
+			cout << "\t\tClient " << tours[i].clients[j] << endl;
+	}
+	cout << "\t\t\tpour une distance total de " << totalLength << endl;
+}
 
 /*
 ostream& operator<<(ostream& os ,const GiantTour& gt ){
