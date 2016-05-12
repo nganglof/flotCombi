@@ -33,13 +33,13 @@ TSPData convertCVRPtoTSP(const CVRPData &data){
 	return convert; 
 }
 
-/*
-void run_clarkeWright(const CVRPData &data){
+
+void run_clarkeWright(const CVRPData &data,char* meth){
   clarkeWrightCVRP CWCVRP(data);
   CWCVRP.clarkeWrightProcedure(data);
   //cout << CWCVRP << endl;
 
-}*/
+}
 
 char* retrieveTSP(int methode,const TSPData & data){
 	
@@ -54,10 +54,9 @@ char* retrieveTSP(int methode,const TSPData & data){
 		while(!DA.isEmpty()){
 			Arc* next = DA.retrieveNext();
 			if(next!= NULL){
-				DA.addSelectedArc(*next);
+				DA.addSelectedArc(data,*next);
 			}
 		}
-		DA.constructPath(data);
 		path = DA.getPathString();
 	}
 	else{
@@ -108,7 +107,7 @@ int main(int argc, char * argv[]) {
 
 		case 1 :
 			//algo 1 : clarkeWright
-			run_clarkeWright(cvrp);
+			run_clarkeWright(cvrp,argv[2]);
 		break;
 
 		case 2 :
